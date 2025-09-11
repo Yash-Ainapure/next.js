@@ -56,6 +56,7 @@ use turbopack_core::{
 pub use turbopack_css as css;
 pub use turbopack_ecmascript as ecmascript;
 use turbopack_ecmascript::{
+    TracingMode,
     references::external_module::{
         CachedExternalModule, CachedExternalTracingMode, CachedExternalType,
     },
@@ -709,7 +710,7 @@ pub async fn externals_tracing_module_context(
             // Environment is not passed in order to avoid downleveling JS / CSS for
             // node-file-trace.
             environment: None,
-            is_tracing: true,
+            tracing_mode: TracingMode::TracingOnly,
             ..Default::default()
         }
         .cell(),

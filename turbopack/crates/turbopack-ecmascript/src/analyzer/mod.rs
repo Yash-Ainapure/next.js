@@ -3786,7 +3786,7 @@ mod tests {
         graph::{ConditionalKind, Effect, EffectArg, EvalContext, VarGraph, create_graph},
         linker::link,
     };
-    use crate::analyzer::imports::ImportAttributes;
+    use crate::{TracingMode, analyzer::imports::ImportAttributes};
 
     #[fixture("tests/analyzer/graph/**/input.js")]
     fn fixture(input: PathBuf) {
@@ -3827,7 +3827,8 @@ mod tests {
                     None,
                 );
 
-                let mut var_graph = create_graph(&m, &eval_context, false);
+                let mut var_graph =
+                    create_graph(&m, &eval_context, TracingMode::BundlingWithTracing);
                 let var_cache = Default::default();
 
                 let mut named_values = var_graph
