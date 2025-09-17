@@ -238,8 +238,8 @@ importers:
         specifier: 3.0.1
         version: 3.0.1
       babel-plugin-react-compiler:
-        specifier: '*'
-        version: 19.1.0-rc.2
+        specifier: 0.0.0-experimental-f1ec104-20250917
+        version: 0.0.0-experimental-f1ec104-20250917
       browserslist:
         specifier: 4.25.1
         version: 4.25.1
@@ -932,8 +932,8 @@ importers:
         specifier: 0.5.15
         version: 0.5.15
       babel-plugin-react-compiler:
-        specifier: 19.1.0-rc.2
-        version: 19.1.0-rc.2
+        specifier: 0.0.0-experimental-f1ec104-20250917
+        version: 0.0.0-experimental-f1ec104-20250917
       caniuse-lite:
         specifier: 1.0.30001579
         version: 1.0.30001579
@@ -6688,8 +6688,8 @@ packages:
     peerDependencies:
       '@babel/core': 7.26.10
 
-  babel-plugin-react-compiler@19.1.0-rc.2:
-    resolution: {integrity: sha512-kSNA//p5fMO6ypG8EkEVPIqAjwIXm5tMjfD1XRPL/sRjYSbJ6UsvORfaeolNWnZ9n310aM0xJP7peW26BuCVzA==}
+  babel-plugin-react-compiler@0.0.0-experimental-f1ec104-20250917:
+    resolution: {integrity: sha512-ie74EbcTSLUWBC4e21YDl9oGK84qmd1zIqsC5G8LIczuFxpDnJ6J4I2eh7/JSKyjhHC+ncY/4WY5Dz17mzuc5w==}
 
   babel-plugin-transform-async-to-promises@0.8.15:
     resolution: {integrity: sha512-fDXP68ZqcinZO2WCiimCL9zhGjGXOnn3D33zvbh+yheZ/qOrNVVDDIBtAaM3Faz8TRvQzHiRKsu3hfrBAhEncQ==}
@@ -22892,7 +22892,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  babel-plugin-react-compiler@19.1.0-rc.2:
+  babel-plugin-react-compiler@0.0.0-experimental-f1ec104-20250917:
     dependencies:
       '@babel/types': 7.27.0
 
