@@ -98,6 +98,7 @@ async fn node_file_trace_operation(
             enable_node_modules: Some(input_dir.clone()),
             custom_conditions: vec![rcstr!("node")],
             loose_errors: true,
+            collect_affecting_sources: true,
             ..Default::default()
         }
         .cell(),

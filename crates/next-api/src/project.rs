@@ -1401,6 +1401,8 @@ impl Project {
         Ok(find_context_file(
             self.project_path().owned().await?,
             middleware_files(self.next_config().page_extensions()),
+            // our callers do not care about affecting sources
+            false,
         ))
     }
 
@@ -1560,6 +1562,8 @@ impl Project {
         Ok(find_context_file(
             self.project_path().owned().await?,
             instrumentation_files(self.next_config().page_extensions()),
+            // our callers do not care about affecting sources
+            false,
         ))
     }
 
