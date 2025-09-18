@@ -613,9 +613,42 @@ async fn process_default_internal(
                                 analyze_types,
                                 options,
                             }),
-                            Some(ModuleType::Custom(_)) => {
-                                // TODO
-                                current_module_type
+                            Some(ModuleType::Custom(custom_module_type)) => {
+                                match custom_module_type
+                                    .extend_ecmascript_transforms(
+                                        **extend_preprocess,
+                                        **extend_main,
+                                        **extend_postprocess,
+                                    )
+                                    .to_resolved()
+                                    .await
+                                {
+                                    Ok(custom_module_type) => {
+                                        Some(ModuleType::Custom(custom_module_type))
+                                    }
+                                    // TODO ideally this would print the actual error message
+                                    // returned by the CustomModuleType
+                                    Err(_) => {
+                                        ModuleIssue {
+                                            ident,
+                                            title: StyledString::Text(rcstr!(
+                                                "Invalid module type"
+                                            ))
+                                            .resolved_cell(),
+                                            description: StyledString::Text(rcstr!(
+                                                "The custom module type didn't accept the \
+                                                 additional Ecmascript transforms"
+                                            ))
+                                            .resolved_cell(),
+                                            source: Some(IssueSource::from_source_only(
+                                                current_source,
+                                            )),
+                                        }
+                                        .resolved_cell()
+                                        .emit();
+                                        Some(ModuleType::Custom(custom_module_type))
+                                    }
+                                }
                             }
                             Some(module_type) => {
                                 ModuleIssue {
