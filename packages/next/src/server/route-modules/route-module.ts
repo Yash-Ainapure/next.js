@@ -697,12 +697,6 @@ export abstract class RouteModule<
       ...parsedUrl.query,
     }
 
-    // The pages router requires that the rewrite query params are included in
-    // the query and are normalized.
-    if (this.router === 'pages') {
-      Object.assign(query, parsedUrl.query)
-    }
-
     const routeParamKeys = new Set<string>()
     const combinedParamKeys = []
 
