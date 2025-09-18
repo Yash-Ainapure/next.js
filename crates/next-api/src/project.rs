@@ -966,19 +966,25 @@ impl Project {
     #[turbo_tasks::function]
     pub async fn whole_app_module_graphs(self: ResolvedVc<Self>) -> Result<Vc<ModuleGraphs>> {
         async move {
-            let module_graphs_op = whole_app_module_graph_operation(self);
-            let module_graphs_vc = module_graphs_op.resolve_strongly_consistent().await?;
-            let _ = module_graphs_op.take_issues().await?;
+            if self.next_mode().await?.is_production() {
+                let module_graphs_op = whole_app_module_graph_operation(self);
+                let module_graphs_vc = module_graphs_op.resolve_strongly_consistent().await?;
+                let _ = module_graphs_op.take_issues().await?;
 
-            // At this point all modules have been computed and we can get rid of the node.js
-            // process pools
-            if *self.is_watch_enabled().await? {
-                turbopack_node::evaluate::scale_down();
+                // At this point all modules have been computed and we can get rid of the node.js
+                // process pools
+                if *self.is_watch_enabled().await? {
+                    turbopack_node::evaluate::scale_down();
+                } else {
+                    turbopack_node::evaluate::scale_zero();
+                }
+
+                Ok(*module_graphs_vc)
             } else {
-                turbopack_node::evaluate::scale_zero();
+                // In dev mode, we don't want to escale down the node.js process pools and we also
+                // don't want to use the operation.
+                whole_app_module_graphs_inner(self).await
             }
-
-            Ok(*module_graphs_vc)
         }
         .instrument(tracing::info_span!("module graph for app"))
         .await
@@ -1788,14 +1794,7 @@ impl Project {
     }
 }
 
-// This is a performance optimization. This function is a root aggregation function that
-// aggregates over the whole subgraph.
-#[turbo_tasks::function(operation)]
-async fn whole_app_module_graph_operation(
-    project: ResolvedVc<Project>,
-) -> Result<Vc<ModuleGraphs>> {
-    mark_root();
-
+async fn whole_app_module_graphs_inner(project: ResolvedVc<Project>) -> Result<Vc<ModuleGraphs>> {
     let should_trace = project.next_mode().await?.is_production();
     let base_single_module_graph =
         SingleModuleGraph::new_with_entries(project.get_all_entries(), should_trace);
@@ -1816,6 +1815,16 @@ async fn whole_app_module_graph_operation(
         full: full.to_resolved().await?,
     }
     .cell())
+}
+
+// This is a performance optimization. This function is a root aggregation function that
+// aggregates over the whole subgraph.
+#[turbo_tasks::function(operation)]
+async fn whole_app_module_graph_operation(
+    project: ResolvedVc<Project>,
+) -> Result<Vc<ModuleGraphs>> {
+    mark_root();
+    whole_app_module_graphs_inner(project).await
 }
 
 #[turbo_tasks::value(shared)]
