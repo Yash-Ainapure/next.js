@@ -982,7 +982,7 @@ impl Project {
                 Ok(*module_graphs_vc)
             } else {
                 // In dev mode, we don't want to escale down the node.js process pools and we also
-                // don't want to use the operation.
+                // don't want to use the operation to ensure issues are reported.
                 whole_app_module_graphs_inner(self).await
             }
         }
